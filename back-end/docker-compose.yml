@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.api
+    container_name: ${API_HOST}
+    entrypoint: ['sh', 'start.dev.sh']
+    volumes:
+      - .:/usr/src/api
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    expose:
+      - "${API_PORT}"
+    env_file:
+      - ./dev.env
+    depends_on:
+      - api-db
+    networks:
+      - api-ntw
+    
+  api-db:
+    container_name: "api-db"
+    build:
+      context: .
+      dockerfile: ./Dockerfile.api-db
+    networks:
+      - api-ntw
+    env_file:
+      - ./dev.env
+    expose:
+      - 3336
+
+networks:
+  api-ntw:
+    driver: bridge
