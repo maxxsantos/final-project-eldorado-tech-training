@@ -1,10 +1,10 @@
 import { Category } from './Category';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Device {
 	@PrimaryGeneratedColumn('increment')
-    id: number
+    id?: number
 
 	@Column({
 		type: "varchar",
@@ -19,9 +19,11 @@ export class Device {
 	})
 	partNumber: number;
 
-	@OneToMany(
+	@ManyToOne(
         () => Category,
-        category => category.id,
+        category => category.devices,
+		{ onDelete: 'CASCADE' }
     )
-    category: Category[];
+	@JoinTable()
+    category?: Category;
 }
